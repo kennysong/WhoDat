@@ -1,12 +1,16 @@
 from alchemyapi import AlchemyAPI
+import re
 
 NAMES_FILE = 'yob2012.txt'
 
 def main():
   #url = 'http://sploid.gizmodo.com/how-ilm-created-hong-kong-with-special-effects-just-to-1503938272/@caseychan'
-  url = 'http://www.theverge.com/2014/1/17/5316980/president-obama-nsa-signals-intelligence-reform-report-card'
+  #url = 'http://www.theverge.com/2014/1/17/5316980/president-obama-nsa-signals-intelligence-reform-report-card'
   #url = 'http://techcrunch.com/2014/01/17/facesubstitute-is-the-coolest-and-creepiest-thing-youll-see-this-week/'
+  url = 'http://www.nytimes.com/2014/01/19/us/politics/film-gives-a-peek-at-the-romney-who-never-quite-won-over-voters.html?hp'
   domains = get_domains(url)
+
+#returns a set of possible domains based on the text on the page at the given url
 
 def get_domains(url):
   #Create the AlchemyAPI Object
@@ -56,11 +60,20 @@ def get_entities(url, alch):
     print('Error in entity extraction call: ', response['statusInfo'])
   return entities
 
-def is_name(txt):
-  #determine if string is a name by checking to see if the first word
-  #is in the file with the list of most popular names
-  txt_split = txt.split(' ')
-  return txt_split[0] in open(NAMES_FILE).read()
+def is_name(str):
+  has_prefix = False
+  has_first_name = False
+  str_split = str.split(' ')
+  first_word = str_split[0]
+  #if the first word in the string is a name prefix the text is a name
+  match = re.search(r'(m|M)r?s?\.?', first_word)
+  if match:
+    has_prefix = True
+  #if first word in the string is in one of the names in the names files of popular names
+  #the string is a name
+  else:
+    has_first_name = first_word in open(NAMES_FILE).read()
+  return has_prefix or has_first_name
 
 if __name__ == '__main__':
   main()
