@@ -6,6 +6,7 @@ from validate_email_new import validate_email
 import smtplib
 from flask import current_app
 from algo.emails import get_emails
+from algo.find_domain import has_results
 
 app = Flask(__name__)
 app.config.update(
@@ -85,7 +86,8 @@ def home_page():
                   x = is_valid_manual(email)
                   print(email + '::' + str(x))
                   if x or x is None:
-                    valid_emails.append(email)
+                    if has_results(email):
+                      valid_emails.append(email)
                                     
 		#message = {-1 : "Unable to verify email", 0 : "Invalid email", 1 : "Valid Email"}
 		# return message[valid]
