@@ -29,6 +29,7 @@ def get_companies(name):
 
     # Go to each profile page of results
     for link in links:
+    #for link in links[:3]:
         print 'Getting: ' + link
         html = requests.get(link).text
         tree = lxml.html.fromstring(html)
