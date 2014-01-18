@@ -3,7 +3,7 @@
 
   "name": "WhoDat",
   "description": "Find anyone's email.",
-  "version": "0.1",
+  "version": "0.2",
 
   "permissions": [
     "http://getwhodat.herokuapp.com/",

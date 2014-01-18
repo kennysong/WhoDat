@@ -78,7 +78,7 @@ def home_page():
 		# return message[valid]
 		return jsonify(email=name.replace(' ','.')+"@gmail.com",message=message[valid])
 	else:
-		return "Who Dat? - GET"
+		return render_template('index.html')
 
 if __name__ == '__main__':
 	# Bind to PORT if defined, otherwise default to 5000.
