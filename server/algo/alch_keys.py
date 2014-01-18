@@ -34,7 +34,8 @@ def get_concepts(url, alch):
     for concept in response['concepts']:
       con_txt = concept['text'].encode('utf-8')
       if con_txt.istitle() and not is_name(con_txt):
-        concepts.add(normalize(con_txt))
+        #concepts.add(normalize(con_txt))
+        concepts.add(con_txt)
   else:
     print('Error in concept tagging call: ', response['statusInfo'])
   return concepts
@@ -46,7 +47,8 @@ def get_keywords(url, alch):
     for keyword in response['keywords']:
       key_txt = keyword['text'].encode('utf-8')
       if key_txt.istitle() and not is_name(key_txt):
-        keywords.add(normalize(key_txt))
+        #keywords.add(normalize(key_txt))
+        keywords.add(key_txt)
   else:
     print('Error in keyword extaction call: ', response['statusInfo'])
   return keywords
@@ -58,7 +60,8 @@ def get_entities(url, alch):
     for entity in response['entities']:
       ent_txt = entity['text'].encode('utf-8')
       if ent_txt.istitle() and not is_name(ent_txt):
-        entities.add(normalize(ent_txt))
+        #entities.add(normalize(ent_txt))
+        entities.add(ent_txt)
   else:
     print('Error in entity extraction call: ', response['statusInfo'])
   return entities

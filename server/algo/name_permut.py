@@ -8,8 +8,8 @@ def helperFunction(inputString):
  	permList += permutateNumbers(inputString)
  	permList += firstAndLastName(inputString)
  	permList += dots(inputString)
-
- 	return permList 	
+        
+ 	return normalize(permList)
  	
 
 
@@ -93,4 +93,9 @@ def dots(inputString):
 		dotsList.append(middleDot)
 
 	return dotsList
-print(helperFunction("Paul Vorobyev"))
+
+def normalize(l):
+        result = []
+        for str in l:
+                result.append(str.lower().replace(' ','').replace('.',''))
+        return result
