@@ -7,10 +7,6 @@ import re
 MAGIC = 70
 
 def main():
-  #name = 'Scott Weiss'
-  name = 'Ron Amadeo'
-  #url = 'http://scott.a16z.com/2014/01/17/success-at-work-failure-at-home/'
-  url = 'http://arstechnica.com/security/2014/01/malware-vendors-buy-chrome-extensions-to-send-adware-filled-updates/?'
   domains = get_domains(name, url)
   print('')
   print('Domain keywords: ' + str(domains))
@@ -21,19 +17,15 @@ def get_domains(name, url):
   #personal
   good_domains.append(name)
 
-  #url
-  match = re.search(r'https?:\/\/(.*\..*?)\/', url)
-  trim_url = match.group(1)
-  print('---------URL: ' + str(trim_url))
-
-  good_domains.append(trim_url)
-  #match = re.search(r'(m|M)r?s?\.?', first_word)
-
-  #gmail
-  good_domains.append('gmail.com')
-
   good_domains += comp_link_alch(name, url)
-  return good_domains
+  
+  better_domains = []
+
+  #send domains to google
+  for domain in good_domains:
+    better_domains += find_site(domain)
+
+  return better_domains
 
 def comp_link_alch(name, url):
   #compare keywords from alchemy and companies from linkedin scraping using fuzzywuzzy
