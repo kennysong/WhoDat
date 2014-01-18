@@ -66,6 +66,14 @@ def home_page():
 	# 	url: "http://google.com"
 	# }
 	if request.method == 'POST':
+		#name = request.form['name']
+		# validate_email(email,check_mx=True,verify=True)
+		# https://github.com/mailgun/flanker
+		#valid = is_valid_manual(name.replace(' ','.') + "@gmail.com")
+		#message = {-1 : "Unable to verify email", 0 : "Invalid email", 1 : "Valid Email"}
+		# return message[valid]
+		#return jsonify(email=name.replace(' ','.')+"@gmail.com",message=message[valid])
+
 		name = request.form['name']
                 url = request.form['url']
                 emails = get_emails(name, url)
