@@ -17,7 +17,7 @@ def get_companies(name):
 	search = sel(tree)
 	jobs = [result.text for result in search]
 
-	companies = [job.split(' at ')[-1].lower() for job in jobs]
+	companies = [job.split(' at ')[-1].lower().strip() for job in jobs]
 
 	return companies
 	
