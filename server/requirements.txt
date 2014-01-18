@@ -6,3 +6,5 @@ pymongo==2.6.3
 requests==2.1.0
 validate-email==1.1
 pydns==2.3.6
+Jinja2==2.7.2
+lxml==3.2.5
