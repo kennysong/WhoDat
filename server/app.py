@@ -17,7 +17,6 @@ def is_valid(email):
 	# return True
 	return validate_email(email,check_mx=True,verify=True)
 
-
 @app.route('/', methods=['GET','POST'])
 def home_page():
 	# online_users = mongo.db.users.find({'': True})
