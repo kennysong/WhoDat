@@ -17,6 +17,7 @@ function clicked(info, tab) {
       $.post("http://getwhodat.herokuapp.com", {"url":url, "name":name}, function(response){
         console.log(response);
       })
+
     });
   });
 
