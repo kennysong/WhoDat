@@ -1,7 +1,8 @@
 Flask==0.10.1
 Flask-PyMongo==0.3.0
-Jinja2==2.7.2
 flask-heroku==0.1.8
 gunicorn==18.0
 pymongo==2.6.3
 requests==2.1.0
+validate-email==1.1
+pydns==2.3.6
