@@ -2,7 +2,9 @@
 <html lang="en">
 <head>
 	<meta charset="UTF-8">
-	<title>WhoDat?</title>
+	<title>WhoDat</title>
+
+	<link rel="icon" type="image/png" href="/static/img/icon.png">
 
 	<link href="http://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css" rel="stylesheet">
 
@@ -32,17 +34,54 @@
 		color: white;
 	}
 
+	.container {
+		margin-left: auto;
+		margin-right: auto;
+		text-align: center;
+		margin-top: 135px;
+	}
+
+	h1	{
+		font-family: 'ProximaNovaRegular';
+		font-size: 50px;
+	}
+
+	.dat {
+		font-family: 'ProximaNovaBold';
+		color: #0077B9;
+	}
+
+	h4 {
+		font-family: 'ProximaNovaLight';
+	}
+
+	.btn-default {
+		background-color: transparent !important;
+		color: white;
+		transition: 0.3s;
+	}
+
+	.btn-default:hover{
+		background-color: rgba(255, 252, 252, 0.24) !important;
+		transition: 0.3s;
+	}
+
 	</style>
 </head>
 
 <body>
 	<div class="container">
-		<img src="/static/img/logo.png">
-		<h1 class="header">WhoDat</h1>
+		<img src="/static/img/icon.png" style="width:150px">
+		<br>
+		<h1 class="header">Who<span class="dat">Dat</span></h1>
+		<br>
 		<h4>Find anyone's email, using semantic analysis and machine learning.</h4>
+		<br><br>
+
+		<button type="button" class="btn btn-default btn-lg">Install on Chrome</button>
 	</div>
 
-		 <button type="button" class="btn btn-info btn-lg">Install on Chrome</button>
+		 
 
 
 </body>

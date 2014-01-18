@@ -32,7 +32,7 @@ def home_page():
 		return is_valid(name.replace(' ','.')+"@gmail.com")
 		return jsonify(email=name.replace(' ','.')+"@gmail.com")
 	else:
-		return "Who Dat? - GET"
+		return render_template('index.html')
 
 if __name__ == '__main__':
 	# Bind to PORT if defined, otherwise default to 5000.
