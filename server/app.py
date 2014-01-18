@@ -2,9 +2,10 @@ import os
 import jinja2
 from flask import Flask, render_template, redirect, request, jsonify
 from flask.ext.pymongo import PyMongo
-from validate_email import validate_email
+from validate_email_new import validate_email
 import smtplib
 from flask import current_app
+from algo.emails import get_emails
 
 app = Flask(__name__)
 app.config.update(
@@ -39,7 +40,7 @@ def is_valid_manual(email):
 			mailservers[number] = x
 
 	if len(mailservers.keys()) == 0:
-		return 0
+		return False
 	minimum = min(mailservers.keys())
 	mailserver = mailservers[minimum]
 
@@ -56,7 +57,7 @@ def is_valid_manual(email):
 					return True
 			elif rep3[0] == 550: #email invalid
 				return False
-	return None
+	return False
 
 @app.route('/', methods=['GET','POST'])
 def home_page():
@@ -66,11 +67,22 @@ def home_page():
 	# }
 	if request.method == 'POST':
 		name = request.form['name']
+                url = request.form['url']
+                emails = get_emails(name, url)
+                print('Emails: ' + str(emails))
 		# online_users = mongo.db.users.find({'name': name, 'tags' : alchemy_tags})
-		valid = is_valid_manual(name.replace(' ','.') + "@fivehour.com")
-		message = {-1 : "Unable to verify email", 0 : "Invalid email", 1 : "Valid Email"}
+		#valid = is_valid_manual(name.replace(' ','.') + "@fivehour.com")
+                valid_emails = []
+                for email in emails:
+                  x = is_valid_manual(email)
+                  print(email + '::' + str(x))
+                  if x or x is None:
+                    valid_emails.append(email)
+                                    
+		#message = {-1 : "Unable to verify email", 0 : "Invalid email", 1 : "Valid Email"}
 		# return message[valid]
-		return jsonify(email=name.replace(' ','.')+"@fivehour.com",message=message[valid])
+		#return jsonify(emails=valid_emails, message=message[valid])
+		return {'emails':valid_emails}
 	else:
 		return render_template('index.html')
 
