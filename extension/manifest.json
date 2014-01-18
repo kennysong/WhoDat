@@ -1,0 +1,19 @@
+{
+  "manifest_version": 2,
+
+  "name": "WhoDat",
+  "description": "Find anyone's email.",
+  "version": "0.1",
+
+  "permissions": [
+    "http://*.herokuapp.com/"
+  ],
+
+  "browser_action": {
+    "default_icon": {
+      "19": "img/logo19.png",
+      "38": "img/logo38.png"
+      },
+    "default_popup": "popup.html"
+    }
+}
