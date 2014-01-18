@@ -48,9 +48,9 @@ def is_valid_manual(email):
 	mailserver = mailservers[minimum]
 
 	s = smtplib.SMTP(mailserver)
-	rep1= s.ehlo()
+	rep1 = s.ehlo()
 	if rep1[0]==250 : #250 denotes OK reply
-		rep2=s.mail("test@rediff.com")
+		rep2 = s.mail("test@rediff.com")
 		if rep2[0] == 250:
 			rep3 = s.rcpt(email)
 			if rep3[0] == 250:

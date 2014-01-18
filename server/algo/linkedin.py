@@ -1,7 +1,8 @@
 import requests
 import lxml.html
-from lxml.cssselect import CSSSelector
 import re
+from lxml.cssselect import CSSSelector
+
 
 def get_companies(name):
     """Returns list of companies from LinkedIn"""
@@ -17,42 +18,33 @@ def get_companies(name):
 
     # Check if page is empty
     sel_null = CSSSelector('.null-results')
-    if (not sel_null(tree)):
+    if (sel_null(tree)):
+        print 'Null results'
         return companies
-
-    # Determine if page is search results or profile page (ie. only one result)
-    sel_title = CSSSelector('title')
-    if ('profiles' in sel_title(tree)[0].text):
-        # If page shows results
-        
-        # Get profile links on results page
-        search = sel_a(tree)
-        links = [result.get('href') for result in search]
+    
+    # Get profile links on results page
+    search = sel_a(tree)
+    links = [result.get('href') for result in search]
 
 
-        # Go to each profile page of results
-        for link in links:
-            print 'Getting: ' + link
-            html = requests.get(link).text
+    # Go to each profile page of results
+    for link in links:
+        print 'Getting: ' + link
+        html = requests.get(link).text
+        tree = lxml.html.fromstring(html)
 
-            sel_job = CSSSelector('.headline-title, .title')
-            search = sel_job(tree)
-            job = search[0].text
-            company = headline.split(' at ')[-1]
-            companies.append(company) 
-            
-        
-    else:
-        # If page shows a profile
         sel_job = CSSSelector('.headline-title, .title')
         search = sel_job(tree)
+        if search == []:
+            continue
+        
         job = search[0].text
-        company = headline.split(' at ')[-1]
-        companies.append(company) 
+        company = job.split(' at ')[-1]
+        companies.append(company)
+        
+    # Remove whitespace, things with only punctuation
+    companies = [company.strip(' \t\n\r') for company in companies]
+    companies = [company for company in companies if re.sub('\W', '', company) != '']
+    
 
     return companies
-        
-            
-            
-    
-    
