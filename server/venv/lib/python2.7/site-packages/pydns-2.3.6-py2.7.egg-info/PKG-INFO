@@ -1,0 +1,21 @@
+Metadata-Version: 1.1
+Name: pydns
+Version: 2.3.6
+Summary: Python DNS library
+Home-page: http://pydns.sourceforge.net/
+Author: Stuart D. Gathman
+Author-email: stuart@bmsi.com
+License: Python License
+Description: Python DNS library:
+        
+Keywords: DNS
+Platform: UNKNOWN
+Classifier: Development Status :: 5 - Production/Stable
+Classifier: Environment :: No Input/Output (Daemon)
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: Python License (CNRI Python License)
+Classifier: Natural Language :: English
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python
+Classifier: Topic :: Internet :: Name Service (DNS)
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
