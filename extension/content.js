@@ -6,7 +6,6 @@ chrome.runtime.onMessage.addListener(
     if (name.split(/\s+/).length > 3) {
         console.log('Too long!')
     } else {
-
         var selection = window.getSelection().getRangeAt(0);
         var selectedText = selection.extractContents();
 
@@ -20,8 +19,6 @@ chrome.runtime.onMessage.addListener(
 
         sendResponse({"copied": window.getSelection().toString()});       
     }
-
-
 });
 
 $(document).ready(function(){
