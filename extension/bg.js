@@ -17,10 +17,11 @@ function clicked(info, tab) {
       $.post("http://getwhodat.herokuapp.com", {"url":url, "name":name}, function(response){
         console.log(response);
       })
+
     });
   });
 
 }
 
-var id = chrome.contextMenus.create({"title": "Find email", "contexts":["all"],
+var id = chrome.contextMenus.create({"title": "WhoDat", "contexts":["all"],
                                      "onclick": clicked});
