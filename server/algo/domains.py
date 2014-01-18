@@ -19,12 +19,18 @@ def get_domains(name, url):
   good_domains = []
 
   #personal
-  good_domains += name
+  good_domains.append(name)
 
   #url
-  strip_url  
+  match = re.search(r'https?:\/\/(.*\..*?)\/', url)
+  trim_url = match.group(1)
+  print('---------URL: ' + str(trim_url))
+
+  good_domains.append(trim_url)
+  #match = re.search(r'(m|M)r?s?\.?', first_word)
 
   #gmail
+  good_domains.append('gmail.com')
 
   good_domains += comp_link_alch(name, url)
   return good_domains
