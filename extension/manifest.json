@@ -12,12 +12,13 @@
 
   "background": {
     "persistent": true,
-    "scripts": ["bg.js", "jquery.min.js"]
+    "scripts": ["bg.js", "jquery.min.js"],
+    "css": ["bootstrap.css"]
   },
 
   "icons": {
     "16": "img/logo19.png",
-    "48": "img/logo19.png"
+    "48": "img/logo48.png"
   },
 
   "content_scripts": [
