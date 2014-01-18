@@ -1,0 +1,24 @@
+Metadata-Version: 1.1
+Name: flask-heroku
+Version: 0.1.8
+Summary: Heroku environment variable configurations for Flask
+Home-page: https://github.com/kennethreitz/flask-heroku
+Author: David Baumgold
+Author-email: david@davidbaumgold.com
+License: BSD
+Description: 
+        Flask-Heroku
+        ------------
+        
+        This is a super simple Flask extension that provides some app configuration
+        defaults based on the Heroku-esque environment variables.
+        
+Platform: any
+Classifier: Environment :: Web Environment
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: BSD License
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python
+Classifier: Programming Language :: Python :: 3
+Classifier: Topic :: Internet :: WWW/HTTP :: Dynamic Content
+Classifier: Topic :: Software Development :: Libraries :: Python Modules

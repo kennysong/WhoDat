@@ -1,0 +1,15 @@
+README.txt
+setup.cfg
+DNS/Base.py
+DNS/Class.py
+DNS/Lib.py
+DNS/Opcode.py
+DNS/Status.py
+DNS/Type.py
+DNS/__init__.py
+DNS/lazy.py
+DNS/win32dns.py
+pydns.egg-info/PKG-INFO
+pydns.egg-info/SOURCES.txt
+pydns.egg-info/dependency_links.txt
+pydns.egg-info/top_level.txt
