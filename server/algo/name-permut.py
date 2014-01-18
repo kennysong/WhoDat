@@ -22,7 +22,7 @@ def permutateNumbers(inputString):
 		space = inputString.find(' ')
 		noSpaceName = inputString[0:space] + inputString[space+1:-1] + inputString[-1]
 		for i in range(0, 10):
-			numPermutationList.append(noSpaceName + str(i));x
+			numPermutationList.append(noSpaceName + str(i));
 	else:
 		upperCase = [up for up in inputString if up.isupper()]
 		space = inputString.find(upperCase[1])
