@@ -28,7 +28,9 @@ def get_domains(name, url):
   better_domains += talk_to_google(name)
 
   #from current url
-  better_domains.append(trim_url(url))
+  trimmed = trim_url(url)
+  if trimmed:
+    better_domains.append(trimmed)
 
   #send domains to google to get better list of possible domains
   for domain in good_domains:
@@ -43,7 +45,7 @@ def talk_to_google(key):
   sites = find_site(key)
   for site in sites:
     trimmed = trim_url(site)
-    if trimmed not in results:
+    if trimmed and trimmed not in results:
       results.append(trimmed)
   return results
 
@@ -82,11 +84,11 @@ def comp_link_alch(name, url):
 
 
 def trim_url(url):
-  #match = re.search(r'https?:\/\/(.*\..*?)\/', url)
-  match = re.search(r'https?:\/\/(.*\.)?(\w*\.\w*)\/', url)
-  result = match.group(2)
+  match = re.search(r'https?:\/\/(.*\.)?((\w|-)*\.(\w|-)*)\/', url)
 
-  return result
+  if match:
+    result = match.group(2)
+    return result
 
 if __name__ == '__main__':
   main()
