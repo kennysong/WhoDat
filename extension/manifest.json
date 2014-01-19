@@ -3,7 +3,7 @@
 
   "name": "WhoDat",
   "description": "Find anyone's email.",
-  "version": "0.2",
+  "version": "0.31",
 
   "permissions": [
     "http://getwhodat.herokuapp.com/",
@@ -12,7 +12,7 @@
 
   "background": {
     "persistent": true,
-    "scripts": ["bg.js", "jquery.min.js"],
+    "scripts": ["bg.js", "jquery.min.js", "popup.js"],
     "css": ["bootstrap.css"]
   },
 

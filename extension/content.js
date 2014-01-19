@@ -13,10 +13,11 @@ chrome.runtime.onMessage.addListener(
         span.style.backgroundColor = "yellow";
         span.appendChild(selectedText);
         selection.insertNode(span);
-        console.log($(span));
+        // console.log($(span));
         $(span).popover({"content": "Finding email...", "placement":"top"})
         $(span).popover('show');
-
+        
+ 
         sendResponse({"copied": window.getSelection().toString()});       
     }
 });
