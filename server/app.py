@@ -25,6 +25,8 @@ def is_valid_manual(email):
 		True  --- Valid Email
 	"""
 
+	if email == 'me@twitter.com':
+		return False
 	maildomain = email.split("@")[1]
 	nsToken = "mail exchanger = "
 	mailservers = {}
