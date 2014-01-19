@@ -10,18 +10,20 @@ def main():
   url = 'http://www.nytimes.com/2014/01/19/us/politics/film-gives-a-peek-at-the-romney-who-never-quite-won-over-voters.html?hp'
   alch_keys = get_alch_keys(url)
 
-#returns a set of possible key words from alchemy api based on the text on the page at the given url
 
+#returns a set of possible key words from alchemy api based on the text on the page at the given url
 def get_alch_keys(url):
   #Create the AlchemyAPI Object
+  print('-----Create AlchemyAPI')
   alch = AlchemyAPI()
 
   alch_keys = set()
+  print('-----get concepts')
   alch_keys |= get_concepts(url, alch)
+  print('-----get keywords')
   alch_keys |= get_keywords(url, alch)
+  print('-----get entities')
   alch_keys |= get_entities(url, alch)
-
-  print(alch_keys)
 
   return alch_keys
 
