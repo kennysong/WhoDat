@@ -107,6 +107,8 @@ def home_page():
 		if ' ' not in name:
 			return {'error' : 'Only one word provided'}
 		url = request.form['url']
+		print name
+		print url
 		emails = get_emails(name, url)
 		# print('Emails: ' + str(emails))
 		# online_users = mongo.db.users.find({'name': name, 'tags' : alchemy_tags})
