@@ -1,6 +1,7 @@
 import requests
 
 def find_site(name):
+	print('find_site name: ' + name)
 	url = "http://google.com/search?q=" + name
 	r = requests.get(url=url)
 
