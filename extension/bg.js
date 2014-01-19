@@ -2,6 +2,8 @@ function clicked(info, tab) {
   var url = tab.url;
   var name;
 
+  console.log(url)
+
   chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
     chrome.tabs.sendMessage(tabs[0].id, {greeting: "whodatclick"}, function(response) {
       var name = response.copied;
@@ -9,12 +11,12 @@ function clicked(info, tab) {
       console.log(url);
       console.log(name);
 
-      $.post("http://getwhodat.herokuapp.com", {"url":url, "name":name}, function(response){
+      $.post("http://getwhodat.herokuapp.com/", {"url":url, "name":name}, function(response){
         console.log(response);
-        var email = response['email'];
+        var emails = response['emails'];
 
         chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
-          chrome.tabs.sendMessage(tabs[0].id, {greeting: "responseemail", 'email': email}, function(response) {
+          chrome.tabs.sendMessage(tabs[0].id, {greeting: "responseemail", 'emails': emails}, function(response) {
             
 
 
