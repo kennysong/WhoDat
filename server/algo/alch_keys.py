@@ -29,8 +29,8 @@ def get_alch_keys(url):
 
 def get_concepts(url, alch):
   response = alch.concepts('url', url)
+  concepts = set()
   if response['status'] == 'OK':
-    concepts = set()
     for concept in response['concepts']:
       con_txt = concept['text'].encode('utf-8')
       if con_txt.istitle() and not is_name(con_txt):
