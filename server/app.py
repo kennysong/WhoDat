@@ -104,8 +104,8 @@ def home_page():
 		#return jsonify(email=name.replace(' ','.')+"@gmail.com",message=message[valid])
 
 		name = request.form['name']
-		if ' ' not in name:
-			return {'error' : 'Only one word provided'}
+		if ' ' not in name or len(name) == 1:
+			return str({'error' : 'Only one word provided'})
 		url = request.form['url']
 		print name
 		print url
