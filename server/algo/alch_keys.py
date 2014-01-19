@@ -1,7 +1,11 @@
 from alchemyapi import AlchemyAPI
 import re
+import requests
+from fuzzywuzzy import fuzz
 
 NAMES_FILE = 'yob2012.txt'
+CRUNCHBASE_API_KEY = 'gmtp8kq3tcpgtfmyqyq4av5e'
+
 
 def main():
   #url = 'http://sploid.gizmodo.com/how-ilm-created-hong-kong-with-special-effects-just-to-1503938272/@caseychan'
@@ -9,7 +13,22 @@ def main():
   #url = 'http://techcrunch.com/2014/01/17/facesubstitute-is-the-coolest-and-creepiest-thing-youll-see-this-week/'
   url = 'http://www.nytimes.com/2014/01/19/us/politics/film-gives-a-peek-at-the-romney-who-never-quite-won-over-voters.html?hp'
   alch_keys = get_alch_keys(url)
+  for i in alch_keys:
+    print i, (verify_companies_with_crunchbase(i))
 
+
+def verify_companies_with_crunchbase(name):
+  url = "http://crunchbase.com/v/1/search.js"
+  data = {"query" : name}
+  r = requests.get(url=url, data=data)
+  results = r.json()
+  if len(name) > 4:
+    if len(results["results"]) > 0 and results['results'][0]["namespace"] == "company" and "name" in results['results'][0].keys() and fuzz.ratio(results['results'][0]["name"], name) >= 70:
+      return True
+  else:
+    if len(results["results"]) > 0 and results['results'][0]["namespace"] == "company" and "name" in results['results'][0].keys():
+      return True
+  return False
 
 #returns a set of possible key words from alchemy api based on the text on the page at the given url
 def get_alch_keys(url):
