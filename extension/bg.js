@@ -30,6 +30,6 @@ function clicked(info, tab) {
 
 }
 
-var id = chrome.contextMenus.create({"title": "WhoDat", "contexts":["all"],
+var id = chrome.contextMenus.create({"title": "WhoDat?", "contexts":["all"],
                                      "onclick": clicked});
 

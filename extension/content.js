@@ -1,5 +1,3 @@
-
-
 chrome.runtime.onMessage.addListener(
   function(request, sender, sendResponse) {
 
@@ -26,6 +24,7 @@ chrome.runtime.onMessage.addListener(
     } else {
         var email = request.email;
         $('.popover-content').html('<form role="form"><div class="input-group input-group-sm"><span class="input-group-addon">To:</span><input class="form-control" style="width: 210px;" id="to" value="'+email+'"></div><div class="input-group input-group-sm" style="margin-top:3px;"><span class="input-group-addon">From:</span><input class="form-control" id="from" style="width: 196px;" placeholder="Your email"></div><div class="input-group input-group-sm" style="margin-top:3px;"><textarea class="form-control" style="width: 248px;height: 180px;" id="message" placeholder="Write email..."></textarea></div><button type="button" style="width: 250px;margin-top: 5px;" class="btn btn-success" id="send_btn">Send!</button></form>');
+        $('.popover-content').html('<form role="form"><h4>Potential Emails</h4><a href="#" class="email"></a></form>');
         $('.popover-content').css({'width':'400px', 'height':'300px'});
         var top = parseInt($('.popover, .fade, .top, .in')[0].style.top);
         var left = parseInt($('.popover, .fade, .top, .in')[0].style.left);
@@ -38,13 +37,9 @@ chrome.runtime.onMessage.addListener(
     }
 });
 
-
-
 $(document).ready(function(){
 	$("body").tooltip();
 	$("body").popover();
-
-
 });
 
 $(document).on('click', '#send_btn', function(e){ 
@@ -57,3 +52,8 @@ $(document).on('click', '#send_btn', function(e){
     })
 });
 
+$(document).on('click', '.emails', function(e){ 
+    e.preventDefault();
+    $(this);
+
+});
