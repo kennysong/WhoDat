@@ -5,25 +5,21 @@ from flask.ext.pymongo import PyMongo
 from validate_email import validate_email
 import smtplib
 from flask import current_app
-# from flanker.addresslib import address
 
 app = Flask(__name__)
 app.config.update(
 	DEBUG = True,
 )
+# mongo = PyMongo(app)
 
 def is_valid(email):
-	# parsed_email = address.validate_address(email)
-	# if (parsed_email is None):
-	# 	return False
-	# return True
 	return validate_email(email,check_mx=True,verify=True)
 
 def is_valid_manual(email):
 	"""Returns:
-		-1 --- Cannot verify
-		0  --- Invalid Email
-		1  --- Valid Email
+		None  --- Cannot verify
+		False --- Invalid Email
+		True  --- Valid Email
 	"""
 
 	maildomain = email.split("@")[1]
@@ -43,7 +39,7 @@ def is_valid_manual(email):
 			mailservers[number] = x
 
 	if len(mailservers.keys()) == 0:
-		return 1
+		return 0
 	minimum = min(mailservers.keys())
 	mailserver = mailservers[minimum]
 
@@ -54,29 +50,27 @@ def is_valid_manual(email):
 		if rep2[0] == 250:
 			rep3 = s.rcpt(email)
 			if rep3[0] == 250:
-				if validate_email(email,check_mx=True,verify=True):
-					return 0
+				if validate_email("ednvoebgtfeb@" + maildomain,check_mx=True,verify=True):
+					return None
 				else:
-					return 1
+					return True
 			elif rep3[0] == 550: #email invalid
-				return 1
-	return .5
+				return False
+	return None
 
 @app.route('/', methods=['GET','POST'])
 def home_page():
-	# online_users = mongo.db.users.find({'': True})
 	# get: {
 	# 	name: "Bob Smith",
 	# 	url: "http://google.com"
 	# }
 	if request.method == 'POST':
 		name = request.form['name']
-		# validate_email(email,check_mx=True,verify=True)
-		# https://github.com/mailgun/flanker
-		valid = is_valid_manual(name.replace(' ','.') + "@gmail.com")
+		# online_users = mongo.db.users.find({'name': name, 'tags' : alchemy_tags})
+		valid = is_valid_manual(name.replace(' ','.') + "@fivehour.com")
 		message = {-1 : "Unable to verify email", 0 : "Invalid email", 1 : "Valid Email"}
 		# return message[valid]
-		return jsonify(email=name.replace(' ','.')+"@gmail.com",message=message[valid])
+		return jsonify(email=name.replace(' ','.')+"@fivehour.com",message=message[valid])
 	else:
 		return render_template('index.html')
 
