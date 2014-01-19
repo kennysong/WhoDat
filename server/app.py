@@ -122,7 +122,7 @@ def home_page():
 		#message = {-1 : "Unable to verify email", 0 : "Invalid email", 1 : "Valid Email"}
 		# return message[valid]
 		#return jsonify(emails=valid_emails, message=message[valid])
-		return {'emails':valid_emails}
+		return jsonify(emails=valid_emails)
 	else:
 		return render_template('index.html')
 
