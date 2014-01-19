@@ -1,6 +1,9 @@
 import requests
+import grequests
 import lxml.html
 import re
+import Queue
+import threading
 from lxml.cssselect import CSSSelector
 
 
@@ -26,14 +29,13 @@ def get_companies(name):
     search = sel_a(tree)
     links = [result.get('href') for result in search]
 
+    # Asynchronous Requests
+    pre_rs = (grequests.get(u) for u in links)
+    rs = grequests.map(pre_rs)
 
-    # Go to each profile page of results
-    for link in links:
-    #for link in links[:3]:
-        print 'Getting: ' + link
-        html = requests.get(link).text
+    for r in rs:
+        html = r.text
         tree = lxml.html.fromstring(html)
-
         sel_job = CSSSelector('.headline-title, .title')
         search = sel_job(tree)
         if search == []:
@@ -42,6 +44,21 @@ def get_companies(name):
         job = search[0].text
         company = job.split(' at ')[-1]
         companies.append(company)
+        
+    # Go to each profile page of results
+    # for link in links:
+    #     print 'Getting: ' + link
+    #     html = requests.get(link).text
+    #     tree = lxml.html.fromstring(html)
+
+    #     sel_job = CSSSelector('.headline-title, .title')
+    #     search = sel_job(tree)
+    #     if search == []:
+    #         continue
+        
+    #     job = search[0].text
+    #     company = job.split(' at ')[-1]
+    #     companies.append(company)
         
     # Remove whitespace, things with only punctuation
     companies = [company.strip(' \t\n\r') for company in companies]
