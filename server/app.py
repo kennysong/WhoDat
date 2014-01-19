@@ -4,6 +4,7 @@ from flask import Flask, render_template, redirect, request, jsonify
 from flask.ext.pymongo import PyMongo
 from validate_email_new import validate_email
 import smtplib
+import sendgrid
 from flask import current_app
 from algo.emails import get_emails
 
@@ -58,6 +59,24 @@ def is_valid_manual(email):
 			elif rep3[0] == 550: #email invalid
 				return False
 	return False
+
+@app.route('/sendgrid', methods=['POST'])
+def sendgrid_page():
+	if request.method == 'POST':
+		to = request.form['to']
+		frm = request.form['from']
+		text = request.form['message']
+
+		# make a secure connection to SendGrid
+		s = sendgrid.Sendgrid('WhoDat', 'MailScopeSucks', secure=True)
+
+		# make a message object
+		message = sendgrid.Message(frm, "Hello!", text)
+		# add a recipient
+		message.add_to(to)
+
+		# use the Web API to send your message
+		s.web.send(message)
 
 @app.route('/', methods=['GET','POST'])
 def home_page():
