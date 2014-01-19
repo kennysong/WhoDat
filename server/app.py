@@ -105,8 +105,8 @@ def home_page():
 		print 'post'
 		name = request.form['name']
 		print name
-		if ' ' not in name:
-			return jsonify(error='Only one word provided')
+		if ' ' not in name or len(name) == 1:
+			return str({'error' : 'Only one word provided'})
 		url = request.form['url']
 		print name
 		print url

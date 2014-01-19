@@ -30,9 +30,14 @@ def has_results(email):
 	return True
 
 def remove_duplicates(original_list):
-    seen = set()
-    seen_add = seen.add
-    return [ x for x in original_list if x not in seen and not seen_add(x)]
+	no_duplicates = []
+	for i in original_list:
+		if i not in no_duplicates:
+			no_duplicates.append(i)
+	return no_duplicates
+	# seen = set()
+	# seen_add = seen.add
+	# return [ x for x in original_list if x not in seen and not seen_add(x)]
 	
 def main():
 	print find_site("Marco Rubio")
