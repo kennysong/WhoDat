@@ -21,7 +21,7 @@ def get_emails(name, url):
   domains = get_domains(name, url)
   print('Domains: ' + str(domains))
 
-  for domain in domains[5:]:
+  for domain in domains:
     email = 'me@' + domain
     emails.append(email)
   
