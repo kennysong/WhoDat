@@ -3,7 +3,7 @@ Flask-PyMongo==0.3.0
 flask-heroku==0.1.8
 gunicorn==18.0
 pymongo==2.6.3
-requests==2.1.0
+requests==2.2.0
 pydns==2.3.6
 Jinja2==2.7.2
 lxml==3.2.5
@@ -11,3 +11,9 @@ grequests==0.2.0
 sendgrid==0.1.4
 fuzzywuzzy==0.2
 cssselect==0.9.1
+MarkupSafe==0.18
+Werkzeug==0.9.4
+gevent==1.0
+greenlet==0.4.2
+itsdangerous==0.23
+wsgiref==0.1.2

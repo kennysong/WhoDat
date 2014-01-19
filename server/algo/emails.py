@@ -1,5 +1,6 @@
 from domains import get_domains
 from name_permut import helperFunction
+from find_domain import remove_duplicates
 
 def main():
   name = 'Scott Weiss'
@@ -18,7 +19,7 @@ def get_emails(name, url):
   usernames = helperFunction(name)
   print('Usernames: ' + str(usernames))
 
-  domains = get_domains(name, url)
+  domains = remove_duplicates(get_domains(name, url))
   print('Domains: ' + str(domains))
 
   for domain in domains:
