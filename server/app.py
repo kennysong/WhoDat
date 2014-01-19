@@ -95,19 +95,21 @@ def home_page():
 		#return jsonify(email=name.replace(' ','.')+"@gmail.com",message=message[valid])
 
 		name = request.form['name']
-                url = request.form['url']
-                emails = get_emails(name, url)
-                print('Emails: ' + str(emails))
+		if ' ' not in name:
+			return {'error' : 'Only one word provided'}
+		url = request.form['url']
+		emails = get_emails(name, url)
+		# print('Emails: ' + str(emails))
 		# online_users = mongo.db.users.find({'name': name, 'tags' : alchemy_tags})
 		#valid = is_valid_manual(name.replace(' ','.') + "@fivehour.com")
-                valid_emails = []
-                for email in emails:
-                  x = is_valid_manual(email)
-                  print(email + '::' + str(x))
-                  if x or x is None:
-                    if has_results(email):
-                      valid_emails.append(email)
-                                    
+		valid_emails = []
+		for email in emails:
+			x = is_valid_manual(email)
+			print(email + '::' + str(x))
+			if x or x is None:
+				if has_results(email):
+					valid_emails.append(email)
+									
 		#message = {-1 : "Unable to verify email", 0 : "Invalid email", 1 : "Valid Email"}
 		# return message[valid]
 		#return jsonify(emails=valid_emails, message=message[valid])
