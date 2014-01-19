@@ -46,20 +46,27 @@ def is_valid_manual(email):
 	minimum = min(mailservers.keys())
 	mailserver = mailservers[minimum]
 
-	s = smtplib.SMTP(mailserver)
-	rep1 = s.ehlo()
-	if rep1[0]==250 : #250 denotes OK reply
-		rep2 = s.mail("test@rediff.com")
-		if rep2[0] == 250:
-			rep3 = s.rcpt(email)
-			if rep3[0] == 250:
-				if validate_email("ednvoebgtfeb@" + maildomain,check_mx=True,verify=True):
-					return None
-				else:
-					return True
-			elif rep3[0] == 550: #email invalid
-				return False
-	return False
+	try:
+		s = smtplib.SMTP(mailserver)
+		rep1 = s.ehlo()
+		if rep1[0]==250 : #250 denotes OK reply
+			rep2 = s.mail("test@rediff.com")
+			if rep2[0] == 250:
+				rep3 = s.rcpt(email)
+				if rep3[0] == 250:
+					if validate_email("ednvoebgtfeb@" + maildomain,check_mx=True,verify=True):
+						return None
+					else:
+						return True
+				elif rep3[0] == 550: #email invalid
+					return False
+		return False
+	except smtplib.SMTPServerDisconnected:  # Server not permits verify user
+		return None
+	except smtplib.SMTPConnectError:
+		return None
+	except:
+		return None
 
 @app.route('/sendgrid', methods=['POST'])
 def sendgrid_page():
