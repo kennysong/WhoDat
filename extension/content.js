@@ -33,8 +33,6 @@ chrome.runtime.onMessage.addListener(
 
 
         $('.popover').css({'top':String(top)+'px', 'left':String(left)+'px'});
-
-
     }
 });
 
