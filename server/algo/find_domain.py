@@ -18,13 +18,25 @@ def find_site(name):
 			good_links.append(link)
 	return remove_duplicates(good_links)
 
+def has_results(email):
+	url = "https://www.google.com/search?q=" + '"' + email + '"'
+	r = requests.get(url=url)
+
+	if ("Your search - <em>&quot;" + email + "&quot;</em> - did not match any documents.") in r.text or \
+		("Your search - <b>" + '"' + email + '"' + "</b> - did not match any documents.") in r.text or \
+		("No results found for <b>&quot;" + email + "&quot;</b>.") in r.text or \
+		("No results found for <b>" + '"' + email + '"' + "</b>") in r.text:
+		return False
+	return True
+
 def remove_duplicates(original_list):
     seen = set()
     seen_add = seen.add
     return [ x for x in original_list if x not in seen and not seen_add(x)]
 	
 def main():
-	print find_site("Barack Obama")
+	print find_site("Marco Rubio")
+	print has_results("jared@getwhodat.com")
 
 if __name__ == "__main__":
 	main()
