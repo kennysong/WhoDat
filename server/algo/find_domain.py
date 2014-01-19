@@ -1,7 +1,6 @@
 import requests
 
 def find_site(name):
-	print('find_site name: ' + name)
 	url = "http://google.com/search?q=" + name
 	r = requests.get(url=url)
 
@@ -31,14 +30,9 @@ def has_results(email):
 	return True
 
 def remove_duplicates(original_list):
-	no_duplicates = []
-	for i in original_list:
-		if i not in no_duplicates:
-			no_duplicates.append(i)
-	return no_duplicates
-	# seen = set()
-	# seen_add = seen.add
-	# return [ x for x in original_list if x not in seen and not seen_add(x)]
+    seen = set()
+    seen_add = seen.add
+    return [ x for x in original_list if x not in seen and not seen_add(x)]
 	
 def main():
 	print find_site("Marco Rubio")

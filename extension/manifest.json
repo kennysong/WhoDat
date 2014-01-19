@@ -7,6 +7,7 @@
 
   "permissions": [
     "http://getwhodat.herokuapp.com/",
+    "http://localhost/",
     "contextMenus"
   ],
 

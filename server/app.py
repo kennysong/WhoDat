@@ -102,11 +102,10 @@ def home_page():
 		#message = {-1 : "Unable to verify email", 0 : "Invalid email", 1 : "Valid Email"}
 		# return message[valid]
 		#return jsonify(email=name.replace(' ','.')+"@gmail.com",message=message[valid])
-		print 'post'
+
 		name = request.form['name']
-		print name
-		if ' ' not in name or len(name) == 1:
-			return str({'error' : 'Only one word provided'})
+		if ' ' not in name:
+			return {'error' : 'Only one word provided'}
 		url = request.form['url']
 		print name
 		print url

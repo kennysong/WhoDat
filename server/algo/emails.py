@@ -19,9 +19,7 @@ def get_emails(name, url):
   usernames = helperFunction(name)
   print('Usernames: ' + str(usernames))
 
-  print('name: ' + name)
-  domains = get_domains(name, url)
-  no_dup_domains = remove_duplicates(domains)
+  domains = remove_duplicates(get_domains(name, url))
   print('Domains: ' + str(domains))
 
   for domain in domains:

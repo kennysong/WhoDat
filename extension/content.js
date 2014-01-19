@@ -29,30 +29,38 @@ chrome.runtime.onMessage.addListener(
 
     } else {
         console.log('else');
-        emails = request.emails;
-        html = '<form role="form"><h4>Potential Emails</h4>';
+        // emails = request.emails;
+        // html = '<form role="form"><h4>Potential Emails</h4>';
+
+        // for (var i=0; i<emails.length; i++) {
+        //     html += '<a href="#" class="email">%s</a>'%emails[i];
+        // }
+        // html += "</form>";
+
+        // $('.popover-content').html(html);
 
 
-        for (var i=0; i<emails.length; i++) {
-            html += '<a href="#" class="email">%s</a>'%emails[i];
+        var emails = request.emails;
+        console.log(emails)
+        var email;
+
+        if (emails.length == 0) {
+            email = 'test@gmail.com';
+        } else {
+            email = emails[0]
         }
-        html += "</form>";
 
-        $('.popover-content').html(html);
-
-
-        // var email = request.email;
-        // $('.popover-content').html('<form role="form"><div class="input-group input-group-sm"><span class="input-group-addon">To:</span><input class="form-control" style="width: 210px;" id="to" value="'+email+'"></div><div class="input-group input-group-sm" style="margin-top:3px;"><span class="input-group-addon">From:</span><input class="form-control" id="from" style="width: 196px;" placeholder="Your email"></div><div class="input-group input-group-sm" style="margin-top:3px;"><textarea class="form-control" style="width: 248px;height: 180px;" id="message" placeholder="Write email..."></textarea></div><button type="button" style="width: 250px;margin-top: 5px;" class="btn btn-success" id="send_btn">Send!</button></form>');
+        $('.popover-content').html('<form role="form"><div class="input-group input-group-sm"><span class="input-group-addon">To: </span><input class="form-control" style="width: 210px;border-radius: 3px;border-color: gray;border: 1px gray solid;" id="to" value="'+email+'"></div><div class="input-group input-group-sm" style="margin-top:3px;border-radius: 3px;border-color: gray;"><span class="input-group-addon">From: </span><input class="form-control" id="from" style="width: 196px;border-radius: 3px;border-color: gray;border: 1px gray solid;" placeholder="Your email"></div><div class="input-group input-group-sm" style="margin-top:3px;"><textarea class="form-control" style="width: 248px;height: 180px;border-radius: 3px;border-color: gray;" id="message" placeholder="Write email..."></textarea></div><button type="button" style="width: 250px;margin-top: 5px;width: 250px;margin-top: 5px;background: #2ecc71;border-color: green;border-bottom-color: green;border-top-color: green;margin: 0;border-radius: 3px;box-shadow: none;border: none;color: white;padding: 10px;" class="btn btn-success" id="send_btn">Send!</button></form>');
         
-        // $('.popover-content').css({'width':'400px', 'height':'300px'});
-        // var top = parseInt($('.popover, .fade, .top, .in')[0].style.top);
-        // var left = parseInt($('.popover, .fade, .top, .in')[0].style.left);
+        $('.popover-content').css({'width':'400px', 'height':'300px'});
+        var top = parseInt($('.popover, .fade, .top, .in')[0].style.top);
+        var left = parseInt($('.popover, .fade, .top, .in')[0].style.left);
 
-        // top -= 270;
-        // left -= 75;
+        top -= 270;
+        left -= 75;
 
 
-        // $('.popover').css({'top':String(top)+'px', 'left':String(left)+'px'});
+        $('.popover').css({'top':String(top)+'px', 'left':String(left)+'px'});
     }
 });
 
