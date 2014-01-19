@@ -44,7 +44,11 @@ def get_alch_keys(url):
   print('-----get entities')
   alch_keys |= get_entities(url, alch)
 
-  return alch_keys
+  good_alch_keys = set()
+  for i in alch_keys:
+    if verify_companies_with_crunchbase(i):
+      good_alch_keys.add(i)
+  return good_alch_keys
 
 def get_concepts(url, alch):
   response = alch.concepts('url', url)
