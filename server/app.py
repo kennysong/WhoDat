@@ -1,13 +1,14 @@
 import os
 import jinja2
 from flask import Flask, render_template, redirect, request, jsonify
-from flask.ext.pymongo import PyMongo
+# from flask.ext.pymongo import PyMongo
 from validate_email_new import validate_email
 import smtplib
 import sendgrid
 from flask import current_app
 from algo.emails import get_emails
 from algo.find_domain import has_results
+import validate_email_new
 
 app = Flask(__name__)
 app.config.update(
@@ -18,7 +19,7 @@ app.config.update(
 def is_valid(email):
 	return validate_email(email,check_mx=True,verify=True)
 
-def is_valid_manual(email):
+def is_valid_helper(email):
 	"""Returns:
 		None  --- Cannot verify
 		False --- Invalid Email
@@ -67,8 +68,14 @@ def is_valid_manual(email):
 		return None
 	except smtplib.SMTPConnectError:
 		return None
-	except:
+	except Exception, err:
+		print err
 		return None
+
+def is_valid_manual(email, results_list, index):
+	# results_list[index] = is_valid_helper(email)
+	results_list[index] = validate_email(email,check_mx=True,verify=True)
+	# print email
 
 @app.route('/sendgrid', methods=['POST'])
 def sendgrid_page():
