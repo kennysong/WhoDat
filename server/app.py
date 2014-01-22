@@ -8,7 +8,9 @@ import sendgrid
 from flask import current_app
 from algo.emails import get_emails
 from algo.find_domain import has_results
-import validate_email_new
+# import validate_email_new
+import threading
+import datetime as dt
 
 app = Flask(__name__)
 app.config.update(
@@ -26,7 +28,7 @@ def is_valid_helper(email):
 		True  --- Valid Email
 	"""
 
-	if email == 'me@twitter.com':
+	if email == 'me@twitter.com' or email == 'me@gmail.com':
 		return False
 	maildomain = email.split("@")[1]
 	nsToken = "mail exchanger = "
@@ -74,7 +76,11 @@ def is_valid_helper(email):
 
 def is_valid_manual(email, results_list, index):
 	# results_list[index] = is_valid_helper(email)
-	results_list[index] = validate_email(email,check_mx=True,verify=True)
+	try:
+		results_list[index] = validate_email(email,check_mx=True,verify=True)
+	except Exception, e:
+		print e
+		print results_list
 	# print email
 
 @app.route('/sendgrid', methods=['POST'])
@@ -112,7 +118,7 @@ def home_page():
 
 		name = request.form['name']
 		if ' ' not in name:
-			return {'error' : 'Only one word provided'}
+			return str({'error' : 'Only one word provided'})
 		url = request.form['url']
 		print name
 		print url
@@ -120,18 +126,42 @@ def home_page():
 		# print('Emails: ' + str(emails))
 		# online_users = mongo.db.users.find({'name': name, 'tags' : alchemy_tags})
 		#valid = is_valid_manual(name.replace(' ','.') + "@fivehour.com")
+		amount = len(emails)
+		results_list = ["_"] * amount
+		for i in range(0,amount):
+			try:
+				threading.Thread(target=is_valid_manual, args=(emails[i], results_list, i)).start()
+			except Exception, errtxt:
+				print errtxt
+		
+		last = threading.active_count() 
+		started = dt.datetime.now()
+		delta = dt.timedelta(seconds=25)
+		while threading.active_count() > 1:
+			if threading.active_count() != last:
+				started = dt.datetime.now()
+				last = threading.active_count()
+				print last
+			if dt.datetime.now() - started >= delta:
+				print 'manual timeout'
+				break
+			continue
+		
 		valid_emails = []
-		for email in emails:
-			x = is_valid_manual(email)
-			print(email + '::' + str(x))
-			if x or x is None:
-				if has_results(email):
-					valid_emails.append(email)
+		for i in range(0,amount):
+			if (results_list[i]) or (results_list[i] is None and has_results(emails[i])):
+				valid_emails.append(emails[i])
+		# for email in emails:
+		# 	x = is_valid_manual(email)
+		# 	print(email + '::' + str(x))
+		# 	if x or x is None:
+		# 		if has_results(email):
+		# 			valid_emails.append(email)
 									
 		#message = {-1 : "Unable to verify email", 0 : "Invalid email", 1 : "Valid Email"}
 		# return message[valid]
 		#return jsonify(emails=valid_emails, message=message[valid])
-		return {'emails':valid_emails}
+		return str({'emails':valid_emails})
 	else:
 		return render_template('index.html')
 

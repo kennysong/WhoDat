@@ -5,7 +5,7 @@ def helperFunction(inputString):
  	permList = [];
  	permList.append(permutateReverse(inputString))
  	permList += permutateInitials(inputString)
- 	permList += permutateNumbers(inputString)
+ 	# permList += permutateNumbers(inputString)
  	permList += firstAndLastName(inputString)
  	permList += dots(inputString)
         
