@@ -42,8 +42,8 @@ def get_concepts(url, alch):
 
 def get_keywords(url, alch):
   response = alch.keywords('url', url, { 'sentiment':1 })
+  keywords = set()
   if response['status'] == 'OK':
-    keywords = set()
     for keyword in response['keywords']:
       key_txt = keyword['text'].encode('utf-8')
       if key_txt.istitle() and not is_name(key_txt):
@@ -55,8 +55,8 @@ def get_keywords(url, alch):
 
 def get_entities(url, alch):
   response = alch.entities('url', url, { 'sentiment':1 })
+  entities = set()
   if response['status'] == 'OK':
-    entities = set()
     for entity in response['entities']:
       ent_txt = entity['text'].encode('utf-8')
       if ent_txt.istitle() and not is_name(ent_txt):

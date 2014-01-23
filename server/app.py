@@ -131,6 +131,7 @@ def home_page():
 		print name
 		print url
 		emails = get_emails(name, url)
+                print("emails: " + str(emails))
 		# print('Emails: ' + str(emails))
 		# online_users = mongo.db.users.find({'name': name, 'tags' : alchemy_tags})
 		#valid = is_valid_manual(name.replace(' ','.') + "@fivehour.com")
