@@ -2,7 +2,8 @@ import os
 import jinja2
 from flask import Flask, render_template, redirect, request, jsonify
 # from flask.ext.pymongo import PyMongo
-from validate_email_new import validate_email
+# import validate_email_new
+from validate_email import validate_email
 import smtplib
 import sendgrid
 from flask import current_app
@@ -60,7 +61,7 @@ def is_valid_helper(email):
 			if rep2[0] == 250:
 				rep3 = s.rcpt(email)
 				if rep3[0] == 250:
-					if validate_email("ednvoebgtfeb@" + maildomain,check_mx=True,verify=True):
+					if is_valid("ednvoebgtfeb@" + maildomain):
 						return None
 					else:
 						return True
@@ -78,7 +79,7 @@ def is_valid_helper(email):
 def is_valid_manual(email, results_list, index):
 	# results_list[index] = is_valid_helper(email)
 	try:
-		results_list[index] = validate_email(email,check_mx=True,verify=True)
+		results_list[index] = is_valid_helper(email)
 	except Exception, e:
 		print e
 		# print results_list
@@ -106,7 +107,7 @@ def sendgrid_page():
 def test():
 	url = request.args.get('url')
 	name = request.args.get('name')
-	return (requests.post(url="http://getwhodat.com", data={'url': url, 'name': name})).text
+	return (requests.post(url="/", data={'url': url, 'name': name})).text
 
 @app.route('/', methods=['GET','POST'])
 def home_page():
@@ -158,6 +159,8 @@ def home_page():
 		valid_emails = []
 		for i in range(0,amount):
 			if (results_list[i]) or (results_list[i] is None and has_results(emails[i])):
+				# if results_list[i] is None:
+				# 	import pdb; pdb.set_trace()
 				valid_emails.append(emails[i])
 		# for email in emails:
 		# 	x = is_valid_manual(email)
