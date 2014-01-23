@@ -11,6 +11,7 @@ from algo.find_domain import has_results
 # import validate_email_new
 import threading
 import datetime as dt
+import requests
 
 app = Flask(__name__)
 app.config.update(
@@ -80,7 +81,7 @@ def is_valid_manual(email, results_list, index):
 		results_list[index] = validate_email(email,check_mx=True,verify=True)
 	except Exception, e:
 		print e
-		print results_list
+		# print results_list
 	# print email
 
 @app.route('/sendgrid', methods=['POST'])
@@ -101,12 +102,19 @@ def sendgrid_page():
 		# use the Web API to send your message
 		s.web.send(message)
 
+@app.route('/test')
+def test():
+	url = request.args.get('url')
+	name = request.args.get('name')
+	return (requests.post(url="http://getwhodat.com", data={'url': url, 'name': name})).text
+
 @app.route('/', methods=['GET','POST'])
 def home_page():
 	# get: {
 	# 	name: "Bob Smith",
 	# 	url: "http://google.com"
 	# }
+	print request.method
 	if request.method == 'POST':
 		#name = request.form['name']
 		# validate_email(email,check_mx=True,verify=True)
