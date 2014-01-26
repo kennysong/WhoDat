@@ -116,7 +116,7 @@ def test():
 	# online_users = mongo.db.users.find({'name': name, 'tags' : alchemy_tags})
 	#valid = is_valid_manual(name.replace(' ','.') + "@fivehour.com")
 	amount = len(emails)
-	results_list = ["_"] * amount
+	results_list = [None] * amount
 	for i in range(0,amount):
 		try:
 			threading.Thread(target=is_valid_manual, args=(emails[i], results_list, i)).start()
@@ -163,7 +163,7 @@ def test():
 	s = sendgrid.Sendgrid('WhoDat', 'MailScopeSucks', secure=True)
 
 	# make a message object
-	message = sendgrid.Message(frm, "Hello!", text)
+	message = sendgrid.Message(frm, name + "'s email", text)
 	# add a recipient
 	message.add_to(to)
 

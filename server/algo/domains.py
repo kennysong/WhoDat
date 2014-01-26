@@ -26,21 +26,21 @@ def get_domains(name, url):
 
   #personal
   better_domains += talk_to_google(name)
+  really_better = []
 
   #from current url
   trimmed = trim_url(url)
   if trimmed:
-    better_domains.append(trimmed)
+    really_better.append(trimmed)
 
   #send domains to google to get better list of possible domains
   for domain in good_domains:
     better_domains += talk_to_google(domain)
-  really_better = []
-  if (len(better_domains) > 10):
+  if (len(better_domains) > 2):
     for i in range(0,2):
       really_better.append(better_domains[i])
   else:
-    really_better = better_domains
+    really_better += better_domains
   
   really_better.append('gmail.com')
 
