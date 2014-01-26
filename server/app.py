@@ -107,7 +107,69 @@ def sendgrid_page():
 def test():
 	url = request.args.get('url')
 	name = request.args.get('name')
-	return (requests.post(url="/", data={'url': url, 'name': name})).text
+	# return (requests.post(url="http://localhost:5000/", data={'url': url, 'name': name})).text
+
+	if ' ' not in name:
+		return str({'error' : 'Only one word provided'})
+	emails = get_emails(name, url)
+	# print('Emails: ' + str(emails))
+	# online_users = mongo.db.users.find({'name': name, 'tags' : alchemy_tags})
+	#valid = is_valid_manual(name.replace(' ','.') + "@fivehour.com")
+	amount = len(emails)
+	results_list = ["_"] * amount
+	for i in range(0,amount):
+		try:
+			threading.Thread(target=is_valid_manual, args=(emails[i], results_list, i)).start()
+		except Exception, errtxt:
+			print errtxt
+	
+	last = threading.active_count() 
+	started = dt.datetime.now()
+	delta = dt.timedelta(seconds=25)
+	while threading.active_count() > 1:
+		if threading.active_count() != last:
+			started = dt.datetime.now()
+			last = threading.active_count()
+			print last
+		if dt.datetime.now() - started >= delta:
+			print 'manual timeout'
+			break
+		continue
+	
+	valid_emails = []
+	for i in range(0,amount):
+		if (results_list[i]) or (results_list[i] is None and has_results(emails[i])):
+			# if results_list[i] is None:
+			# 	import pdb; pdb.set_trace()
+			valid_emails.append(emails[i])
+	# for email in emails:
+	# 	x = is_valid_manual(email)
+	# 	print(email + '::' + str(x))
+	# 	if x or x is None:
+	# 		if has_results(email):
+	# 			valid_emails.append(email)
+								
+	#message = {-1 : "Unable to verify email", 0 : "Invalid email", 1 : "Valid Email"}
+	# return message[valid]
+	#return jsonify(emails=valid_emails, message=message[valid])
+	to =  request.args.get('email')
+	print to
+	frm = "us@getwhodat.com"
+	text = ""
+	for em in valid_emails:
+		text += em + ", "
+
+	# make a secure connection to SendGrid
+	s = sendgrid.Sendgrid('WhoDat', 'MailScopeSucks', secure=True)
+
+	# make a message object
+	message = sendgrid.Message(frm, "Hello!", text)
+	# add a recipient
+	message.add_to(to)
+
+	# use the Web API to send your message
+	s.web.send(message)
+	return str({'emails':valid_emails})
 
 @app.route('/', methods=['GET','POST'])
 def home_page():

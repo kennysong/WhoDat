@@ -63,7 +63,7 @@ def comp_link_alch(name, url):
 
   if url:
     print('-------getting alch keys')
-    alch_keys = get_alch_keys(url)
+    alch_keys = list(get_alch_keys(url))
 
   if not companies and alch_keys:
     print('-------no companies from linkedin')
@@ -86,8 +86,19 @@ def comp_link_alch(name, url):
     print('--------no matches found from linkedin and alchemy')
     good_domains = companies + list(alch_keys)
 
-  return good_domains
+  return flatten(good_domains)
 
+def flatten(lst):
+  if not isinstance(lst, list):
+    return lst
+  compiled = []
+  for i in lst:
+    flat = flatten(i)
+    if isinstance(flat, list):
+      compiled += flat
+    else:
+      compiled.append(flat)
+  return compiled
 
 def trim_url(url):
   match = re.search(r'https?:\/\/(.*\.)?((\w|-)*\.(\w|-)*)\/', url)

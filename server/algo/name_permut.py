@@ -53,12 +53,14 @@ def permutateInitials(inputString):
 	if(inputString.find(' ') != -1):
 		space = inputString.find(' ')
 		initials = [inputString[0] + inputString[space+1:-1] + inputString[-1], inputString[0:space] + inputString[space+1]]
+		# initials = [inputString[0] + inputString[space+1:-1] + inputString[-1], inputString[0:space] + inputString[space+1], inputString[0], inputString[space+1], inputString[0] + inputString[space+1]]
 		return initials
 		
 	else:
 		upperCase = [up for up in inputString if up.isupper()]
 		space = inputString.find(upperCase[1])
 		initials = [inputString[0] + inputString[space+1:-1] + inputString[-1], inputString[0:space] + inputString[space+1]]
+		# initials = [inputString[0] + inputString[space+1:-1] + inputString[-1], inputString[0:space] + inputString[space+1], inputString[0]]
 		return initials
 
 
