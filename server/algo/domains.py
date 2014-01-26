@@ -60,6 +60,7 @@ def comp_link_alch(name, url):
   good_domains = []
   print('-------getting companies')
   companies = get_companies(name)
+  print('companies: ' + str(companies))
 
   if url:
     print('-------getting alch keys')
@@ -67,10 +68,10 @@ def comp_link_alch(name, url):
 
   if not companies and alch_keys:
     print('-------no companies from linkedin')
-    good_domains.append(alch_keys)
+    good_domains += list(alch_keys)
   elif companies and not alch_keys:
     print('-------no alchemy keywords')
-    good_domains.append(companies)
+    good_domains += companies
   else:
     print('-------alchemy: ' + str(len(alch_keys)))
     print('-------companies: ' + str(len(companies)))
@@ -81,10 +82,9 @@ def comp_link_alch(name, url):
         if similarity > MAGIC:
           print('-------Magic! Found a match, added linkedin company')
           good_domains.append(company)
-
-  if not good_domains:
-    print('--------no matches found from linkedin and alchemy')
-    good_domains = companies + list(alch_keys)
+    if not good_domains:
+      print('--------no matches found from linkedin and alchemy')
+      good_domains = companies + list(alch_keys)
 
   return flatten(good_domains)
 
