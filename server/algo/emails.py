@@ -1,5 +1,6 @@
 from domains import get_domains, talk_to_google
 from name_permut import get_all_username_permutations
+from find_domain import remove_duplicates
 
 def main():
 	name = 'Scott Weiss'
