@@ -2,110 +2,117 @@ from fuzzywuzzy import fuzz
 from alch_keys import get_alch_keys
 from linkedin import get_companies
 from find_domain import find_site
+from find_domain import remove_duplicates
 import re
 
-MAGIC = 70
+FUZZY_SEARCH_ACCURACY = 70 # accuracy needed, out of 100
 
-def main():
-  #name = 'Scott Weiss'
-  #name = 'Ron Amadeo'
-  name = 'Michael Sippey'
-  #url = 'http://scott.a16z.com/2014/01/17/success-at-work-failure-at-home/'
-  #url = 'http://arstechnica.com/security/2014/01/malware-vendors-buy-chrome-extensions-to-send-adware-filled-updates/?'
-  url = 'http://techcrunch.com/2014/01/17/michael-sippey-leaving-twitter/'
-
-  domains = get_domains(name, url)
-  print('')
-  print('Domain keywords: ' + str(domains))
 
 def get_domains(name, url):
-  good_domains = []
-  good_domains += comp_link_alch(name, url)
-  
-  better_domains = []
+	# Called by: get_possible_emails() in emails.py
+	keywords = []
+	keywords += get_keywords_from_url_and_linkedin(name, url)
+	
+	domains = []
 
-  #personal
-  better_domains += talk_to_google(name)
-  really_better = []
+	# from current url
+	trimmed = trim_url(url)
+	if trimmed:
+		domains.append(trimmed)
 
-  #from current url
-  trimmed = trim_url(url)
-  if trimmed:
-    really_better.append(trimmed)
+	# keywords --> urls
+	urls = []
+	for word in keywords:
+		urls += talk_to_google(word)
+	
+	# limit to 2
+	if (len(urls) > 2):
+		for i in range(0,2):
+			domains.append(urls[i])
+	else:
+		domains += urls
 
-  #send domains to google to get better list of possible domains
-  for domain in good_domains:
-    better_domains += talk_to_google(domain)
-  if (len(better_domains) > 2):
-    for i in range(0,2):
-      really_better.append(better_domains[i])
-  else:
-    really_better += better_domains
-  
-  really_better.append('gmail.com')
+	# gmail
+	domains.append('gmail.com')
 
-  return really_better
+	return remove_duplicates(domains)
 
 def talk_to_google(key):
-  results = []
-  sites = find_site(key)
-  for site in sites:
-    trimmed = trim_url(site)
-    if trimmed and trimmed not in results:
-      results.append(trimmed)
-  return results
+	# perform a google search and return all results that are root domain (ex: http://google.com/, NOT http://google.com/user)
+	sites = find_site(key)
 
-def comp_link_alch(name, url):
-  #compare keywords from alchemy and companies from linkedin scraping using fuzzywuzzy
-  good_domains = []
-  print('-------getting companies')
-  companies = get_companies(name)
-  print('companies: ' + str(companies))
+	results = []
+	for site in sites:
+		trimmed = trim_url(site)
+		if trimmed and trimmed not in results:
+			results.append(trimmed)
+	return results
 
-  if url:
-    print('-------getting alch keys')
-    alch_keys = list(get_alch_keys(url))
+def get_keywords_from_url_and_linkedin(name, url):
+	#compare keywords from alchemy and companies from scraping linkedin using fuzzywuzzy
+	domains = []
+	
+	# scrape linkedin for companies
+	print('-------getting companies')
+	companies = get_companies(name)
+	print('companies: ' + str(companies))
 
-  if not companies and alch_keys:
-    print('-------no companies from linkedin')
-    good_domains += list(alch_keys)
-  elif companies and not alch_keys:
-    print('-------no alchemy keywords')
-    good_domains += companies
-  else:
-    print('-------alchemy: ' + str(len(alch_keys)))
-    print('-------companies: ' + str(len(companies)))
-    for alch in alch_keys:
-      for company in companies:
-        similarity = fuzz.ratio(alch, company)
-        print(alch + ', ' + company +  ': ' + str(similarity))
-        if similarity > MAGIC:
-          print('-------Magic! Found a match, added linkedin company')
-          good_domains.append(company)
-    if not good_domains:
-      print('--------no matches found from linkedin and alchemy')
-      good_domains = companies + list(alch_keys)
+	if url:
+		# perform semantic analysis on url, return keys
+		print('-------getting alch keys')
+		alch_keys = list(get_alch_keys(url))
 
-  return flatten(good_domains)
+	if not companies and alch_keys:
+		print('-------no companies from linkedin')
+		domains += list(alch_keys)
+	elif companies and not alch_keys:
+		print('-------no alchemy keywords')
+		domains += companies
+	else:
+		print('-------alchemy: ' + str(len(alch_keys)))
+		print('-------companies: ' + str(len(companies)))
+		for alch in alch_keys:
+			for company in companies:
+				similarity = fuzz.ratio(alch, company)
+				print(alch + ', ' + company +  ': ' + str(similarity))
+				if similarity > FUZZY_SEARCH_ACCURACY:
+					print('-------Magic! Found a match, added linkedin company')
+					domains.append(company)
+		if not domains:
+			print('--------no matches found from linkedin and alchemy')
+			domains = companies + list(alch_keys)
+
+	return flatten(domains)
 
 def flatten(lst):
-  if not isinstance(lst, list):
-    return lst
-  compiled = []
-  for i in lst:
-    flat = flatten(i)
-    if isinstance(flat, list):
-      compiled += flat
-    else:
-      compiled.append(flat)
-  return compiled
+	"""Flatten a list.
+		ex: [[1,2,[3]],6] --> [1,2,3,6]
+	"""
+	if not isinstance(lst, list):
+		return lst
+	compiled = []
+	for i in lst:
+		flat = flatten(i)
+		if isinstance(flat, list):
+			compiled += flat
+		else:
+			compiled.append(flat)
+	return compiled
 
 def trim_url(url):
-  match = re.search(r'https?:\/\/(.*\.)?((\w|-)*\.(\w|-)*)\/', url)
+	match = re.search(r'https?:\/\/(.*\.)?((\w|-)*\.(\w|-)*)\/', url)
 
-  if match:
-    result = match.group(2)
-    return result
+	if match:
+		result = match.group(2)
+		return result
+
+def main():
+	name = 'Michael Sippey'
+	url = 'http://techcrunch.com/2014/01/17/michael-sippey-leaving-twitter/'
+
+	domains = get_domains(name, url)
+	print('')
+	print('Domain keywords: ' + str(domains))
 
 if __name__ == '__main__':
-  main()
+	main()

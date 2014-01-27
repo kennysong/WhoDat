@@ -1,7 +1,7 @@
 
-# helperFunction:  uses all the other functions
+# get_all_username_permutations:  uses all the other functions
 #permList is the final list or array of all possible permutations
-def helperFunction(inputString):
+def get_all_username_permutations(inputString):
  	permList = [];
  	permList.append(permutateReverse(inputString))
  	permList += permutateInitials(inputString)

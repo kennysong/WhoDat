@@ -1,89 +1,20 @@
 import os
 import jinja2
 from flask import Flask, render_template, redirect, request, jsonify
-# from flask.ext.pymongo import PyMongo
-# import validate_email_new
-from validate_email import validate_email
 import smtplib
 import sendgrid
 from flask import current_app
-from algo.emails import get_emails
+from algo.emails import get_possible_emails
 from algo.find_domain import has_results
-# import validate_email_new
 import threading
 import datetime as dt
 import requests
+import email_checking
 
 app = Flask(__name__)
 app.config.update(
 	DEBUG = True,
 )
-# mongo = PyMongo(app)
-
-def is_valid(email):
-	return validate_email(email,check_mx=True,verify=True)
-
-def is_valid_helper(email):
-	"""Returns:
-		None  --- Cannot verify
-		False --- Invalid Email
-		True  --- Valid Email
-	"""
-
-	if email == 'me@twitter.com' or email == 'me@gmail.com':
-		return False
-	maildomain = email.split("@")[1]
-	nsToken = "mail exchanger = "
-	mailservers = {}
-	plines = os.popen("nslookup -type=MX "+maildomain).readlines()
-	for pline in plines:
-		if nsToken in pline:
-			x = (pline.split(nsToken)[1].strip()).split(' ')
-			number = None
-			try:
-				number = int(x[0])
-			except:
-				continue
-			x.remove(x[0])
-			x = "".join(x)
-			mailservers[number] = x
-
-	if len(mailservers.keys()) == 0:
-		return False
-	minimum = min(mailservers.keys())
-	mailserver = mailservers[minimum]
-
-	try:
-		s = smtplib.SMTP(mailserver)
-		rep1 = s.ehlo()
-		if rep1[0]==250 : #250 denotes OK reply
-			rep2 = s.mail("test@rediff.com")
-			if rep2[0] == 250:
-				rep3 = s.rcpt(email)
-				if rep3[0] == 250:
-					if is_valid("ednvoebgtfeb@" + maildomain):
-						return None
-					else:
-						return True
-				elif rep3[0] == 550: #email invalid
-					return False
-		return False
-	except smtplib.SMTPServerDisconnected:  # Server not permits verify user
-		return None
-	except smtplib.SMTPConnectError:
-		return None
-	except Exception, err:
-		print err
-		return None
-
-def is_valid_manual(email, results_list, index):
-	# results_list[index] = is_valid_helper(email)
-	try:
-		results_list[index] = is_valid_helper(email)
-	except Exception, e:
-		print e
-		# print results_list
-	# print email
 
 @app.route('/sendgrid', methods=['POST'])
 def sendgrid_page():
@@ -105,24 +36,34 @@ def sendgrid_page():
 
 @app.route('/test')
 def test():
+	# GET: 
+	# 	{
+	# 		url : http://google.com,
+	#	 	name : Jared Zoneraich,
+	# 		email : jared@getwhodat.com
+	# 	}
+
+	# get arguments
 	url = request.args.get('url')
 	name = request.args.get('name')
-	# return (requests.post(url="http://localhost:5000/", data={'url': url, 'name': name})).text
-
 	if ' ' not in name:
 		return str({'error' : 'Only one word provided'})
-	emails = get_emails(name, url)
-	# print('Emails: ' + str(emails))
-	# online_users = mongo.db.users.find({'name': name, 'tags' : alchemy_tags})
-	#valid = is_valid_manual(name.replace(' ','.') + "@fivehour.com")
+	
+	# Get email permutations
+	emails = get_possible_emails(name, url)
 	amount = len(emails)
+	if amount == 0:
+		return "No possible emails"
+	
+	# verify emails exist
 	results_list = [None] * amount
 	for i in range(0,amount):
 		try:
-			threading.Thread(target=is_valid_manual, args=(emails[i], results_list, i)).start()
+			threading.Thread(target=email_checking.is_valid, args=(emails[i], results_list, i)).start()
 		except Exception, errtxt:
 			print errtxt
 	
+	# Threading
 	last = threading.active_count() 
 	started = dt.datetime.now()
 	delta = dt.timedelta(seconds=25)
@@ -134,24 +75,14 @@ def test():
 		if dt.datetime.now() - started >= delta:
 			print 'manual timeout'
 			break
-		continue
 	
+	# When all threads finish or timeout
 	valid_emails = []
 	for i in range(0,amount):
 		if (results_list[i]) or (results_list[i] is None and has_results(emails[i])):
-			# if results_list[i] is None:
-			# 	import pdb; pdb.set_trace()
 			valid_emails.append(emails[i])
-	# for email in emails:
-	# 	x = is_valid_manual(email)
-	# 	print(email + '::' + str(x))
-	# 	if x or x is None:
-	# 		if has_results(email):
-	# 			valid_emails.append(email)
-								
-	#message = {-1 : "Unable to verify email", 0 : "Invalid email", 1 : "Valid Email"}
-	# return message[valid]
-	#return jsonify(emails=valid_emails, message=message[valid])
+	
+	# Send email to user with results b/c request probably timed out
 	to =  request.args.get('email')
 	print to
 	frm = "us@getwhodat.com"
@@ -159,16 +90,12 @@ def test():
 	for em in valid_emails:
 		text += em + ", "
 
-	# make a secure connection to SendGrid
 	s = sendgrid.Sendgrid('WhoDat', 'MailScopeSucks', secure=True)
-
-	# make a message object
 	message = sendgrid.Message(frm, name + "'s email", text)
-	# add a recipient
 	message.add_to(to)
-
-	# use the Web API to send your message
 	s.web.send(message)
+
+	# If request did not time out, return results
 	return str({'emails':valid_emails})
 
 @app.route('/', methods=['GET','POST'])
@@ -182,7 +109,7 @@ def home_page():
 		#name = request.form['name']
 		# validate_email(email,check_mx=True,verify=True)
 		# https://github.com/mailgun/flanker
-		#valid = is_valid_manual(name.replace(' ','.') + "@gmail.com")
+		#valid = email_checking.is_valid(name.replace(' ','.') + "@gmail.com")
 		#message = {-1 : "Unable to verify email", 0 : "Invalid email", 1 : "Valid Email"}
 		# return message[valid]
 		#return jsonify(email=name.replace(' ','.')+"@gmail.com",message=message[valid])
@@ -193,16 +120,16 @@ def home_page():
 		url = request.form['url']
 		print name
 		print url
-		emails = get_emails(name, url)
+		emails = get_possible_emails(name, url)
                 print("emails: " + str(emails))
 		# print('Emails: ' + str(emails))
 		# online_users = mongo.db.users.find({'name': name, 'tags' : alchemy_tags})
-		#valid = is_valid_manual(name.replace(' ','.') + "@fivehour.com")
+		#valid = email_checking.is_valid(name.replace(' ','.') + "@fivehour.com")
 		amount = len(emails)
 		results_list = ["_"] * amount
 		for i in range(0,amount):
 			try:
-				threading.Thread(target=is_valid_manual, args=(emails[i], results_list, i)).start()
+				threading.Thread(target=email_checking.is_valid, args=(emails[i], results_list, i)).start()
 			except Exception, errtxt:
 				print errtxt
 		
@@ -222,19 +149,7 @@ def home_page():
 		valid_emails = []
 		for i in range(0,amount):
 			if (results_list[i]) or (results_list[i] is None and has_results(emails[i])):
-				# if results_list[i] is None:
-				# 	import pdb; pdb.set_trace()
 				valid_emails.append(emails[i])
-		# for email in emails:
-		# 	x = is_valid_manual(email)
-		# 	print(email + '::' + str(x))
-		# 	if x or x is None:
-		# 		if has_results(email):
-		# 			valid_emails.append(email)
-									
-		#message = {-1 : "Unable to verify email", 0 : "Invalid email", 1 : "Valid Email"}
-		# return message[valid]
-		#return jsonify(emails=valid_emails, message=message[valid])
 		return str({'emails':valid_emails})
 	else:
 		return render_template('index.html')
